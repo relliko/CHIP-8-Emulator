@@ -21,7 +21,7 @@ void init_SDL(void) {
         exit(1);
     }
 
-    //SDL_Delay(17);
+    SDL_Delay(99999);
 
 
 }
