@@ -3,6 +3,7 @@
 #include <font.h>
 #include <debug.h>
 #include <display.h>
+#include <input.h>
 
 int main(int argc, char **argv) {
     printf("Booting...\n");
@@ -10,6 +11,17 @@ int main(int argc, char **argv) {
     load_font();
     // print_memory(80, 80);
     // test_stack();
-    init_SDL();
+    init_display();
+
+    // Main game loop
+    while (1) {
+        // Events
+        handle_input_events();
+        // Update loop
+        render();
+        break;
+    }
+
+    cleanup_display();
     return 0;
 }

@@ -1,18 +1,17 @@
 #include <display.h>
 
-// Display is 64x32 px or 128x64 for SUPER-CHIP
+SDL_Window *window;
 
-void init_SDL(void) {
-    SDL_Window *window;
+void init_display(void) {
 
     SDL_Init(SDL_INIT_VIDEO);
 
     window = SDL_CreateWindow(
-        "CHIP-8 EMULATOR",                  // window title
+        "CHIP-8 EMULATOR",                 // window title
         SDL_WINDOWPOS_UNDEFINED,           // initial x position
         SDL_WINDOWPOS_UNDEFINED,           // initial y position
-        SCREEN_WIDTH,                               // width, in pixels
-        SCREEN_HEIGHT,                               // height, in pixels
+        SCREEN_WIDTH,                      // width, in pixels
+        SCREEN_HEIGHT,                     // height, in pixels
         SDL_WINDOW_OPENGL                  // flags - see below
     );
 
@@ -21,7 +20,13 @@ void init_SDL(void) {
         exit(1);
     }
 
-    SDL_Delay(99999);
+}
 
+void cleanup_display(void) {
+    SDL_DestroyWindow(window);
+    SDL_Quit();
+}
 
+void render() {
+    return;
 }
