@@ -16,7 +16,8 @@ int main(int argc, char **argv) {
     // Main game loop
     while (1) {
         handle_input_events();
-        // Update loop
+        // TODO: Main update loop
+
         render();
     }
 

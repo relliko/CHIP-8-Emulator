@@ -62,6 +62,7 @@ void render(void) {
     // offset position based on x,y of pixels array
     for (int y = 0; y < SCREEN_HEIGHT/WINDOW_SCALAR; y++) {
         for (int x = 0; x < SCREEN_WIDTH/WINDOW_SCALAR; x++) {
+            
             draw_purple_pixel(x, y);
             draw_pixel_grid(x, y);
         }

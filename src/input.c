@@ -6,7 +6,6 @@ void handle_input_events(void) {
     while (SDL_PollEvent(&event)) {
         switch( event.type ){
             case SDL_KEYDOWN:
-                printf( "Key pressed\n" );
                 switch (event.key.keysym.sym) {
                     case SDLK_ESCAPE:
                         exit(1);
@@ -50,7 +49,6 @@ void handle_input_events(void) {
                 break;
 
             case SDL_KEYUP:
-                //printf( "Key release detected\n" );
                 break;
 
             default:
