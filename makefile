@@ -7,10 +7,10 @@ LDIR=lib
 
 LIBS=-lm
 
-_DEPS = chip8.h mem.h display.h cpu.h sound.h font.h debug.h input.h
+_DEPS = chip8.h mem.h display.h cpu.h sound.h font.h debug.h input.h timer.h
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 
-_OBJ = chip8.o mem.o display.o cpu.o sound.o font.o debug.o input.o
+_OBJ = chip8.o mem.o display.o cpu.o sound.o font.o debug.o input.o timer.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 chip8: $(OBJ)

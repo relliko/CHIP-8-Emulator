@@ -38,7 +38,7 @@ void cleanup_display(void) {
 
 // Draws a grid on the screen for debugging
 static void draw_pixel_grid(int x, int y) {
-    SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0xff);
+    SDL_SetRenderDrawColor(renderer, 0x80, 0x80, 0x80, 0xff);
     SDL_Rect outlineRect = {x*WINDOW_SCALAR, y*WINDOW_SCALAR, WINDOW_SCALAR, WINDOW_SCALAR};
     SDL_RenderDrawRect(renderer, &outlineRect);
 }
@@ -48,8 +48,9 @@ static void set_color_purple() {
     SDL_SetRenderDrawColor(renderer, 0x3c, 0x00, 0x5a, 0xff);
 }
 
+
 // Draws the pixel at x,y as a purple rect
-static void draw_purple_pixel(int x, int y) {
+static void draw_pixel(int x, int y) {
     set_color_purple();
     SDL_Rect fillRect = {x*WINDOW_SCALAR, y*WINDOW_SCALAR, WINDOW_SCALAR, WINDOW_SCALAR};
     SDL_RenderFillRect(renderer, &fillRect);
@@ -62,7 +63,7 @@ void render(void) {
     for (int y = 0; y < SCREEN_HEIGHT/WINDOW_SCALAR; y++) {
         for (int x = 0; x < SCREEN_WIDTH/WINDOW_SCALAR; x++) {
             
-            draw_purple_pixel(x, y);
+            draw_pixel(x, y);
             draw_pixel_grid(x, y);
         }
     }
