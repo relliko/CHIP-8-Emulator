@@ -1,5 +1,4 @@
 #include <display.h>
-#include <unistd.h>
 
 SDL_Window *window;
 SDL_Renderer* renderer = NULL;
@@ -17,7 +16,7 @@ void init_display(void) {
         SDL_WINDOWPOS_UNDEFINED,           // initial y position
         SCREEN_WIDTH,                      // width, in pixels
         SCREEN_HEIGHT,                     // height, in pixels
-        SDL_WINDOW_OPENGL                  // flags - see below
+        SDL_WINDOW_OPENGL                  // flags
     );
     if (window == NULL) {
         printf("Could not create window: %s\n", SDL_GetError());

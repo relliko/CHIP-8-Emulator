@@ -5,7 +5,7 @@ CFLAGS=`sdl2-config --libs --cflags` -Wall -I$(IDIR)
 ODIR=obj
 LDIR=lib
 
-LIBS=
+LIBS=-lm
 
 _DEPS = chip8.h mem.h display.h cpu.h sound.h font.h debug.h input.h
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
