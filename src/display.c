@@ -2,10 +2,13 @@
 
 SDL_Window *window;
 
+// Makes up the bits representing the pixels on screen
+// CHIP-8 is monochrome so bits are sufficient to represent them.
+uint8_t pixels[SCREEN_HEIGHT/8][SCREEN_WIDTH/8];
+
 void init_display(void) {
-
     SDL_Init(SDL_INIT_VIDEO);
-
+    printf("%lu\n", sizeof(pixels[0]));
     window = SDL_CreateWindow(
         "CHIP-8 EMULATOR",                 // window title
         SDL_WINDOWPOS_UNDEFINED,           // initial x position
