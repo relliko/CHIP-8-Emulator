@@ -1,4 +1,4 @@
+#include <SDL2/SDL.h>
 
 
-
-int handle_input_events(void);
+void handle_input_events(void);

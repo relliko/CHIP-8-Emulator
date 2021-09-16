@@ -15,11 +15,9 @@ int main(int argc, char **argv) {
 
     // Main game loop
     while (1) {
-        // Events
         handle_input_events();
         // Update loop
         render();
-        break;
     }
 
     cleanup_display();

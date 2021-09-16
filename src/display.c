@@ -19,7 +19,6 @@ void init_display(void) {
         printf("Could not create window: %s\n", SDL_GetError());
         exit(1);
     }
-
 }
 
 void cleanup_display(void) {
