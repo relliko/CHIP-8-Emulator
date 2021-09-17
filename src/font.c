@@ -1,6 +1,7 @@
 #include <mem.h>
+#include <stdint.h>
 
-char FONTS[80] = {
+uint8_t FONTS[80] = {
     0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
     0x20, 0x60, 0x20, 0x20, 0x70, // 1
     0xF0, 0x10, 0xF0, 0x80, 0xF0, // 2
@@ -22,6 +23,6 @@ char FONTS[80] = {
 void load_font() {
     // Load the font into memory starting from 0x50
     for (int i = 0; i < sizeof(FONTS); i++) {
-        MEMORY[0x50 + i] = FONTS[i];
+        *(FONT_ADDR + i) = FONTS[i];
     }
 }

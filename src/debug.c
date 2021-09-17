@@ -31,6 +31,7 @@ void print_memory(short start, short n) {
     }
 }
 
+
 void print_pixels_array(uint8_t arr[32][64]) {
     printf("Printing pixels array\n");
     for (int y = 0; y < 32; y++) {
@@ -40,6 +41,7 @@ void print_pixels_array(uint8_t arr[32][64]) {
     }
     printf("Printing pixels array finished\n\n");
 }
+
 
 // fills the stack then pops 
 void test_stack() {

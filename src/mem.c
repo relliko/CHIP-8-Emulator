@@ -6,6 +6,7 @@
 // Returns 1 upon success
 void init_mem(void) {
     MEMORY_ADDR = &MEMORY[0];
+    FONT_ADDR = MEMORY_ADDR + 0x50;
     PROGRAM_START_ADDR = MEMORY_ADDR + 0x500;
     MEMORY_END_ADDR = MEMORY_ADDR + RAM_SIZE;
     stack.height = 0;
