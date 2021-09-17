@@ -10,6 +10,7 @@ int main(int argc, char **argv) {
     printf("Booting...\n");
     init_mem();
     init_cpu();
+    init_timers();
     load_font();
     // print_memory(80, 80);
     // test_stack();
