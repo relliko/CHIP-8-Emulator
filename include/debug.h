@@ -14,4 +14,5 @@
 
 
 void print_memory(short start, short n);
+void print_pixels_array(uint8_t arr[32][64]);
 void test_stack();

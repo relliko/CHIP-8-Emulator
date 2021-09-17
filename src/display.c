@@ -5,7 +5,7 @@ SDL_Renderer* renderer = NULL;
 
 // Makes up the bits representing the pixels on screen
 // CHIP-8 is monochrome so bits are sufficient to represent them.
-uint8_t pixels[(SCREEN_HEIGHT/WINDOW_SCALAR)/8][(SCREEN_WIDTH/WINDOW_SCALAR)/8];
+static uint8_t pixels[PIXELS_HEIGHT][PIXELS_WIDTH/8];
 
 void init_display(void) {
     SDL_Init(SDL_INIT_VIDEO);
@@ -44,10 +44,14 @@ static void draw_pixel_grid(int x, int y) {
 }
 
 // Sets the render color to purple
-static void set_color_purple() {
+static void set_color_purple(void) {
     SDL_SetRenderDrawColor(renderer, 0x3c, 0x00, 0x5a, 0xff);
 }
 
+
+static void set_color_black(void) {
+    SDL_SetRenderDrawColor(renderer, 0xff, 0xff, 0xff, 0xff);
+}
 
 // Draws the pixel at x,y as a purple rect
 static void draw_pixel(int x, int y) {
@@ -56,17 +60,54 @@ static void draw_pixel(int x, int y) {
     SDL_RenderFillRect(renderer, &fillRect);
 }
 
+// "Clears" a pixel by drawing the color representing a blank
+static void clear_pixel(int x, int y) {
+    set_color_black();
+    SDL_Rect fillRect = {x*WINDOW_SCALAR, y*WINDOW_SCALAR, WINDOW_SCALAR, WINDOW_SCALAR};
+    SDL_RenderFillRect(renderer, &fillRect);
+}
+
+// Determines if the nth pixel from left to right in the byte is on
+// Uses zero indexing.
+static int pixel_on_at_pos(uint8_t bits, int n) {
+    if (bits == 0 || n > 7) {
+        return 0;
+    } else if (0x1 & bits && n == 0) {
+        return 1;
+    } else if (0x2 & bits && n == 1) {
+        return 1;
+    } else if (0x4 & bits && n == 2) {
+        return 1;
+    } else if (0x8 & bits && n == 3) {
+        return 1;
+    } else if (0x10 & bits && n == 4) {
+        return 1;
+    } else if (0x20 & bits && n == 5) {
+        return 1;
+    } else if (0x40 & bits && n == 6) {
+        return 1;
+    } else if (0x80 & bits && n == 7) {
+        return 1;
+    }
+
+    return 0;
+}
+
 void render(void) {
     SDL_SetRenderDrawColor(renderer, 0x3c, 0x00, 0x5a, 0xff);
     // Draw a rect for every pixel in the grid
     // offset position based on x,y of pixels array
-    for (int y = 0; y < SCREEN_HEIGHT/WINDOW_SCALAR; y++) {
-        for (int x = 0; x < SCREEN_WIDTH/WINDOW_SCALAR; x++) {
-            
-            draw_pixel(x, y);
+    for (int y = 0; y < PIXELS_HEIGHT; y++) {
+        for (int x = 0; x < PIXELS_WIDTH; x++) {
+            if (pixel_on_at_pos(pixels[y][x/8], (x % 8))) {
+                draw_pixel(x, y);
+            } else {
+                clear_pixel(x, y);
+            }
             draw_pixel_grid(x, y);
         }
     }
+
     SDL_RenderPresent(renderer);
 
     return;

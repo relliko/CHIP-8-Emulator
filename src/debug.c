@@ -31,6 +31,16 @@ void print_memory(short start, short n) {
     }
 }
 
+void print_pixels_array(uint8_t arr[32][64]) {
+    printf("Printing pixels array\n");
+    for (int y = 0; y < 32; y++) {
+        for (int x = 0; x < 64; x++) {
+            printf(" | %#04x: "BYTE_TO_BINARY_PATTERN"\n", (uint8_t) x/8, BYTE_TO_BINARY(arr[y/8][x/8]));
+        }
+    }
+    printf("Printing pixels array finished\n\n");
+}
+
 // fills the stack then pops 
 void test_stack() {
     int c = 0;
