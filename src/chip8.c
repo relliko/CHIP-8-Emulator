@@ -12,7 +12,7 @@ int main(int argc, char **argv) {
     init_cpu();
     init_timers();
     load_font();
-    // print_memory(80, 80);
+    //print_memory(80, 80);
     // test_stack();
     init_display();
 
@@ -21,6 +21,7 @@ int main(int argc, char **argv) {
         update_timers();
         handle_input_events();
         // TODO: Main update loop
+        cpu_cycle();
 
         render();
     }

@@ -3,9 +3,6 @@
 SDL_Window *window;
 SDL_Renderer* renderer = NULL;
 
-// Makes up the bits representing the pixels on screen
-// CHIP-8 is monochrome so bits are sufficient to represent them.
-static uint8_t pixels[PIXELS_HEIGHT][PIXELS_WIDTH/8];
 
 void init_display(void) {
     SDL_Init(SDL_INIT_VIDEO);
@@ -89,7 +86,6 @@ static int pixel_on_at_pos(uint8_t bits, int n) {
     } else if (0x80 & bits && n == 7) {
         return 1;
     }
-
     return 0;
 }
 

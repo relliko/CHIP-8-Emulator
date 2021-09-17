@@ -7,3 +7,4 @@
 uint8_t* pc; // Program counter 
 
 void init_cpu(void);
+void cpu_cycle(void);
