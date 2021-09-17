@@ -9,10 +9,8 @@
 #define SCREEN_HEIGHT (32*WINDOW_SCALAR)
 #define SCREEN_FPS 60
 
-// Makes up the bits representing the pixels on screen
-// CHIP-8 is monochrome so bits are sufficient to represent them.
-uint8_t pixels[PIXELS_HEIGHT][PIXELS_WIDTH/8];
 
 void init_display(void);
 void cleanup_display(void);
+void clear_screen(void);
 void render(void);

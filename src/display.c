@@ -3,6 +3,9 @@
 SDL_Window *window;
 SDL_Renderer* renderer = NULL;
 
+// Makes up the bits representing the pixels on screen
+// CHIP-8 is monochrome so bits are sufficient to represent them.
+uint8_t pixels[PIXELS_HEIGHT][PIXELS_WIDTH/8];
 
 void init_display(void) {
     SDL_Init(SDL_INIT_VIDEO);
@@ -38,6 +41,15 @@ static void draw_pixel_grid(int x, int y) {
     SDL_SetRenderDrawColor(renderer, 0x80, 0x80, 0x80, 0xff);
     SDL_Rect outlineRect = {x*WINDOW_SCALAR, y*WINDOW_SCALAR, WINDOW_SCALAR, WINDOW_SCALAR};
     SDL_RenderDrawRect(renderer, &outlineRect);
+}
+
+// Wipes all pixels by setting entire pixel array to 0.
+void clear_screen() {
+    for (int y = 0; y < PIXELS_HEIGHT; y++) {
+        for (int x = 0; x < PIXELS_WIDTH/8; x++) {
+            pixels[y][x] = 0x00;
+        }
+    }
 }
 
 // Sets the render color to purple
