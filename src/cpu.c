@@ -108,10 +108,12 @@ void decode_and_execute(uint16_t opcode) {
                 case 0x4: // Addition with carry flag
                     DATA_AT_REG(reg, nib2) = DATA_AT_REG(reg, nib2) + DATA_AT_REG(reg, nib3);
                     // Check for overflow
-                    if (DATA_AT_REG(reg, nib3) > DATA_AT_REG(reg, nib2))
+                    if (DATA_AT_REG(reg, nib3) > DATA_AT_REG(reg, nib2)) {
                         reg.VF = 1;
-                    else
+                    }
+                    else {
                         reg.VF = 0;
+                    }
                     break;
                 case 0x5: // Subtract with carry flag (X = X - Y)
                     DATA_AT_REG(reg, nib2) = DATA_AT_REG(reg, nib2) - DATA_AT_REG(reg, nib3);
@@ -121,8 +123,10 @@ void decode_and_execute(uint16_t opcode) {
                         reg.VF = 0;
                     break;
                 case 0x6: // Shift
-                    if (!SUPER_CHIP)
+                    if (!SUPER_CHIP) {
                         DATA_AT_REG(reg, nib2) = DATA_AT_REG(reg, nib3);
+                    }
+                    reg.VF = (DATA_AT_REG(reg, nib2) & 0x01);
                     DATA_AT_REG(reg, nib2) = DATA_AT_REG(reg, nib2) >> 1;
                     break;
                 case 0x7: // Subtract with carry flag (X = Y - X)
@@ -133,8 +137,10 @@ void decode_and_execute(uint16_t opcode) {
                         reg.VF = 0;
                     break;
                 case 0xE:
-                    if (!SUPER_CHIP)
+                    if (!SUPER_CHIP) {
                         DATA_AT_REG(reg, nib2) = DATA_AT_REG(reg, nib3);
+                    }
+                    reg.VF = (DATA_AT_REG(reg, nib2) & 0x01);
                     DATA_AT_REG(reg, nib2) = DATA_AT_REG(reg, nib2) << 1;
                     break;
             }
