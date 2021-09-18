@@ -58,7 +58,7 @@ void clear_screen(void) {
 // Returns 1 if a pixel was turned off by this operation, else 0
 int draw_from_mem(uint16_t addr, short n, uint8_t x, uint8_t y) {
     int flipped = 0;
-    pixels[0][0] = 1;
+    // TODO: Sprite wrapping
     for (int i = 0; i < n; i++) {
         pixels[y+i][x] = pixels[y+i][x] | MEMORY[addr+i];
     }
@@ -70,13 +70,13 @@ static void set_color_purple(void) {
     SDL_SetRenderDrawColor(renderer, 0x3c, 0x00, 0x5a, 0xff);
 }
 
-// static void set_color_black(void) {
-//     SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0xff);
-// }
-
-static void set_color_white(void) {
-    SDL_SetRenderDrawColor(renderer, 0xff, 0xff, 0xff, 0xff);
+static void set_color_black(void) {
+    SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0xff);
 }
+
+// static void set_color_white(void) {
+//     SDL_SetRenderDrawColor(renderer, 0xff, 0xff, 0xff, 0xff);
+// }
 
 // Draws the pixel at x,y as a purple rect
 static void draw_pixel(int x, int y) {
@@ -87,7 +87,7 @@ static void draw_pixel(int x, int y) {
 
 // "Clears" a pixel by drawing the color representing a blank
 static void clear_pixel(int x, int y) {
-    set_color_white();
+    set_color_black();
     SDL_Rect fillRect = {x*WINDOW_SCALAR, y*WINDOW_SCALAR, WINDOW_SCALAR, WINDOW_SCALAR};
     SDL_RenderFillRect(renderer, &fillRect);
 }
@@ -128,7 +128,7 @@ void render(void) {
             } else {
                 clear_pixel(x, y);
             }
-            draw_pixel_grid(x, y);
+            //draw_pixel_grid(x, y);
         }
     }
 

@@ -5,6 +5,7 @@
 #include <display.h>
 #include <input.h>
 #include <timer.h>
+#include <file.h>
 
 int main(int argc, char **argv) {
     printf("Booting...\n");
@@ -15,14 +16,13 @@ int main(int argc, char **argv) {
     //print_memory(80, 80);
     // test_stack();
     init_display();
+    load_ROM();
 
     // Main game loop
     while (1) {
         update_timers();
         handle_input_events();
-        // TODO: Main update loop
         cpu_cycle();
-
         render();
     }
 

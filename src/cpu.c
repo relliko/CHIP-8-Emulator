@@ -55,6 +55,9 @@ void decode_and_execute(uint16_t opcode) {
 
     switch (nib1) {
         case 0x0: // clear screen
+            // if (nib2 == 0 && nib3 == 0 && nib4 == 0) {
+            //     printf("Possibly reading outside of memory space.\n");
+            // }
             clear_screen();
             break;
         case 0x1: // jump
