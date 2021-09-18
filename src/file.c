@@ -9,7 +9,7 @@
 // Loads a ROM into memory at 0x200
 void load_ROM() {
     FILE* fp;
-    char* filepath = "./ROM/IBM-Logo.ch8";
+    char* filepath = "./ROM/test_opcode.ch8";
     fp = fopen(filepath, "rb");
     if (!fp) {
         printf("Error: fopen(%s) error number %d, %s.\n", filepath, errno, strerror(errno));

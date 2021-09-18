@@ -7,7 +7,7 @@ SDL_Renderer* renderer = NULL;
 
 // Makes up the bits representing the pixels on screen
 // CHIP-8 is monochrome so bits are sufficient to represent them.
-uint8_t pixels[PIXELS_HEIGHT][PIXELS_WIDTH/8];
+uint8_t pixels[PIXELS_HEIGHT][PIXELS_WIDTH];
 
 void init_display(void) {
     SDL_Init(SDL_INIT_VIDEO);
@@ -48,7 +48,7 @@ static void draw_pixel_grid(int x, int y) {
 // Wipes all pixels by setting entire pixel array to 0.
 void clear_screen(void) {
     for (int y = 0; y < PIXELS_HEIGHT; y++) {
-        for (int x = 0; x < PIXELS_WIDTH/8; x++) {
+        for (int x = 0; x < PIXELS_WIDTH; x++) {
             pixels[y][x] = 0x00;
         }
     }
@@ -56,11 +56,19 @@ void clear_screen(void) {
 
 // Draws an n pixel tall sprite from memory location held in addr at x,y in the pixel array.
 // Returns 1 if a pixel was turned off by this operation, else 0
-int draw_from_mem(uint16_t addr, short n, uint8_t x, uint8_t y) {
+int draw_from_mem(uint16_t addr, uint8_t n, uint8_t x, uint8_t y) {
     int flipped = 0;
     // TODO: Sprite wrapping
+    //printf("%d %d\n", x, y);
     for (int i = 0; i < n; i++) {
-        pixels[y+i][x] = pixels[y+i][x] | MEMORY[addr+i];
+        uint8_t template = MEMORY[addr+i];
+        for (int j = 0; j < 8; j++) {
+            uint8_t temp = pixels[y+i][x+j];
+            pixels[y+i][x+j] = pixels[y+i][x+j] | ((template << j) & 0x80);
+            if (pixels[y+i][x+j] != temp) {
+                flipped = 1;
+            }
+        }
     }
     return flipped;
 }
@@ -94,24 +102,8 @@ static void clear_pixel(int x, int y) {
 
 // Determines if the nth pixel from left to right in the byte is on
 // Uses zero indexing.
-static int pixel_on_at_pos(uint8_t bits, int n) {
-    if (bits == 0 || n > 7) {
-        return 0;
-    } else if (0x1 & bits && n == 0) {
-        return 1;
-    } else if (0x2 & bits && n == 1) {
-        return 1;
-    } else if (0x4 & bits && n == 2) {
-        return 1;
-    } else if (0x8 & bits && n == 3) {
-        return 1;
-    } else if (0x10 & bits && n == 4) {
-        return 1;
-    } else if (0x20 & bits && n == 5) {
-        return 1;
-    } else if (0x40 & bits && n == 6) {
-        return 1;
-    } else if (0x80 & bits && n == 7) {
+static int pixel_on_at_pos(uint8_t bits) {
+    if (bits > 0) {
         return 1;
     }
     return 0;
@@ -123,7 +115,7 @@ void render(void) {
     // offset position based on x,y of pixels array
     for (int y = 0; y < PIXELS_HEIGHT; y++) {
         for (int x = 0; x < PIXELS_WIDTH; x++) {
-            if (pixel_on_at_pos(pixels[y][x/8], (x % 8))) {
+            if (pixel_on_at_pos(pixels[y][x])) {
                 draw_pixel(x, y);
             } else {
                 clear_pixel(x, y);

@@ -13,5 +13,5 @@
 void init_display(void);
 void cleanup_display(void);
 void clear_screen(void);
-int draw_from_mem(uint16_t addr, short n, uint8_t x, uint8_t y);
+int draw_from_mem(uint16_t addr, uint8_t n, uint8_t x, uint8_t y);
 void render(void);

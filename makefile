@@ -1,6 +1,6 @@
 IDIR=include
 CC=gcc
-CFLAGS=`sdl2-config --libs --cflags` -Wall -I$(IDIR) 
+CFLAGS=`sdl2-config --libs --cflags` -Wall -I$(IDIR)
 
 ODIR=obj
 LDIR=lib

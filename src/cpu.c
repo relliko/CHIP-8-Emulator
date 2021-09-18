@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <display.h>
+#include <arpa/inet.h>
 
 
 uint8_t* pc;
@@ -54,14 +55,16 @@ void decode_and_execute(uint16_t opcode) {
     uint8_t nib4 =  opcode        & 0xf;
 
     switch (nib1) {
-        case 0x0: // clear screen
+        case 0x0:
             // if (nib2 == 0 && nib3 == 0 && nib4 == 0) {
             //     printf("Possibly reading outside of memory space.\n");
             // }
-            clear_screen();
+            if (nib3 == 0xE) { // clear screen
+                clear_screen();
+            }
             break;
         case 0x1: // jump
-            pc = MEMORY_ADDR + ((nib2 << 8) + (nib3 << 4) + nib4);
+            pc = MEMORY_ADDR + (opcode & 0x0fff);
             break;
         case 0x2:
             break;
@@ -74,17 +77,17 @@ void decode_and_execute(uint16_t opcode) {
         case 0x6: // Set register
             // Assign the register VX where X is the data in nib2 
             // the data in the last 2 nibbles in the opcode
-            DATA_AT_REG(reg, nib2) = ((nib3 << 4) + nib4);
+            DATA_AT_REG(reg, nib2) = (opcode & 0x00ff);
             break;
         case 0x7: // add a value to register VX
-            DATA_AT_REG(reg, nib2) = DATA_AT_REG(reg, nib2) + ((nib3 << 4) + nib4);
+            DATA_AT_REG(reg, nib2) = DATA_AT_REG(reg, nib2) + (opcode & 0x00ff);
             break;
         case 0x8:
             break;
         case 0x9:
             break;
         case 0xA: // Set index register
-            *(&reg.I) = ((nib2 << 8) + (nib3 << 4) + nib4);
+            reg.I = opcode & 0x0fff;
             break;
         case 0xB:
             break;
@@ -94,8 +97,11 @@ void decode_and_execute(uint16_t opcode) {
             {   
                 uint8_t x = DATA_AT_REG(reg, nib2);
                 uint8_t y = DATA_AT_REG(reg, nib3);
+                // printf("%d\n", x);
+                // printf("%d\n", y);
                 uint8_t n = nib4;
                 uint16_t addr = reg.I; // Pull the data out of index register
+                //printf("%x\n", addr);
                 int res = draw_from_mem(addr, n, x, y);
                 // Set flag register to 1
                 if (res == 1) {
