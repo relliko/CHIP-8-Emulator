@@ -52,7 +52,6 @@ void decode_and_execute(uint16_t opcode) {
     uint8_t nib2 = (opcode >> 8)  & 0xf;
     uint8_t nib3 = (opcode >> 4)  & 0xf;
     uint8_t nib4 =  opcode        & 0xf;
-    //printf("%d %d %d\n", nib2, nib3, nib4);
 
     switch (nib1) {
         case 0x0: // clear screen
@@ -88,7 +87,18 @@ void decode_and_execute(uint16_t opcode) {
             break;
         case 0xC:
             break;
-        case 0xD:
+        case 0xD: // Display 
+            {   
+                uint8_t x = DATA_AT_REG(reg, nib2);
+                uint8_t y = DATA_AT_REG(reg, nib3);
+                uint8_t n = nib4;
+                uint16_t addr = reg.I; // Pull the data out of index register
+                int res = draw_from_mem(addr, n, x, y);
+                // Set flag register to 1
+                if (res == 1) {
+                    reg.VF = 1;
+                }
+            }
             break;
         case 0xE:
             break;
@@ -99,9 +109,5 @@ void decode_and_execute(uint16_t opcode) {
 
 void cpu_cycle(void) {
     uint16_t opcode = fetch();
-    // uint16_t test = 0xA111;
-    // decode_and_execute(test);
-    // uint16_t test2 = 0x7101;
-    // decode_and_execute(test2);
-    // decode_and_execute(opcode);
+    decode_and_execute(opcode);
 }

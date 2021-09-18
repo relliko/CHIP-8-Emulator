@@ -1,4 +1,6 @@
 #include <display.h>
+#include <mem.h>
+#include <debug.h>
 
 SDL_Window *window;
 SDL_Renderer* renderer = NULL;
@@ -44,7 +46,7 @@ static void draw_pixel_grid(int x, int y) {
 }
 
 // Wipes all pixels by setting entire pixel array to 0.
-void clear_screen() {
+void clear_screen(void) {
     for (int y = 0; y < PIXELS_HEIGHT; y++) {
         for (int x = 0; x < PIXELS_WIDTH/8; x++) {
             pixels[y][x] = 0x00;
@@ -52,13 +54,27 @@ void clear_screen() {
     }
 }
 
+// Draws an n pixel tall sprite from memory location held in addr at x,y in the pixel array.
+// Returns 1 if a pixel was turned off by this operation, else 0
+int draw_from_mem(uint16_t addr, short n, uint8_t x, uint8_t y) {
+    int flipped = 0;
+    pixels[0][0] = 1;
+    for (int i = 0; i < n; i++) {
+        pixels[y+i][x] = pixels[y+i][x] | MEMORY[addr+i];
+    }
+    return flipped;
+}
+
 // Sets the render color to purple
 static void set_color_purple(void) {
     SDL_SetRenderDrawColor(renderer, 0x3c, 0x00, 0x5a, 0xff);
 }
 
+// static void set_color_black(void) {
+//     SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0xff);
+// }
 
-static void set_color_black(void) {
+static void set_color_white(void) {
     SDL_SetRenderDrawColor(renderer, 0xff, 0xff, 0xff, 0xff);
 }
 
@@ -71,7 +87,7 @@ static void draw_pixel(int x, int y) {
 
 // "Clears" a pixel by drawing the color representing a blank
 static void clear_pixel(int x, int y) {
-    set_color_black();
+    set_color_white();
     SDL_Rect fillRect = {x*WINDOW_SCALAR, y*WINDOW_SCALAR, WINDOW_SCALAR, WINDOW_SCALAR};
     SDL_RenderFillRect(renderer, &fillRect);
 }
