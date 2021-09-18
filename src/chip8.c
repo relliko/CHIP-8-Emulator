@@ -14,7 +14,7 @@ int main(int argc, char **argv) {
     init_timers();
     load_font();
     //print_memory(80, 80);
-    // test_stack();
+    //test_stack();
     init_display();
     load_ROM();
 

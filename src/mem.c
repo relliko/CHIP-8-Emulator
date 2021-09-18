@@ -29,7 +29,7 @@ uint8_t* stack_pop(void) {
         printf("ERROR: Attempt to pop from stack when stack is empty.\n");
         exit(1);
     }
-    uint8_t* ret = stack.stk[stack.height];
+    uint8_t* ret = stack.stk[stack.height-1];
     stack.height--;
     return ret;
 }
