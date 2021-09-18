@@ -61,12 +61,16 @@ void decode_and_execute(uint16_t opcode) {
             // }
             if (nib3 == 0xE) { // clear screen
                 clear_screen();
+            } else if (nib3 == 0xE && nib4 == 0xE) { // Return from subroutine
+                pc = stack_pop();
             }
             break;
         case 0x1: // jump
-            pc = MEMORY_ADDR + (opcode & 0x0fff);
+            pc = MEMORY_ADDR + (opcode & 0x0FFF);
             break;
-        case 0x2:
+        case 0x2: // Call subroutine
+            stack_push(pc);
+            pc = MEMORY_ADDR + (opcode & 0x0FFF);
             break;
         case 0x3:
             break;
@@ -77,17 +81,17 @@ void decode_and_execute(uint16_t opcode) {
         case 0x6: // Set register
             // Assign the register VX where X is the data in nib2 
             // the data in the last 2 nibbles in the opcode
-            DATA_AT_REG(reg, nib2) = (opcode & 0x00ff);
+            DATA_AT_REG(reg, nib2) = (opcode & 0x00FF);
             break;
         case 0x7: // add a value to register VX
-            DATA_AT_REG(reg, nib2) = DATA_AT_REG(reg, nib2) + (opcode & 0x00ff);
+            DATA_AT_REG(reg, nib2) = DATA_AT_REG(reg, nib2) + (opcode & 0x00FF);
             break;
         case 0x8:
             break;
         case 0x9:
             break;
         case 0xA: // Set index register
-            reg.I = opcode & 0x0fff;
+            reg.I = opcode & 0x0FFF;
             break;
         case 0xB:
             break;
@@ -97,11 +101,8 @@ void decode_and_execute(uint16_t opcode) {
             {   
                 uint8_t x = DATA_AT_REG(reg, nib2);
                 uint8_t y = DATA_AT_REG(reg, nib3);
-                // printf("%d\n", x);
-                // printf("%d\n", y);
                 uint8_t n = nib4;
                 uint16_t addr = reg.I; // Pull the data out of index register
-                //printf("%x\n", addr);
                 int res = draw_from_mem(addr, n, x, y);
                 // Set flag register to 1
                 if (res == 1) {

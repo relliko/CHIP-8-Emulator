@@ -45,15 +45,15 @@ void print_pixels_array(uint8_t arr[32][64]) {
 
 // fills the stack then pops 
 void test_stack() {
-    int c = 0;
-    while (c < STACK_SIZE) {
-        stack_push((uint16_t) c);
-        c++;
+    uint8_t* c = 0x00;
+    for (int i = 0; i < STACK_SIZE; i++) {
+        stack_push((uint8_t*) c);
+        c = c + 0x01;
     }
     
     while (c > 0) {
-        uint16_t data = stack_pop();
-        printf("%d\n", data);
+        uint8_t* data = stack_pop();
+        printf("%p\n", data);
         c--;
     }
 }
