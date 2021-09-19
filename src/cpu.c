@@ -2,7 +2,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <display.h>
+#include <input.h>
 #include <arpa/inet.h>
+#include <settings.h>
 
 
 uint8_t* pc;
@@ -152,9 +154,15 @@ void decode_and_execute(uint16_t opcode) {
         case 0xA: // Set index register
             reg.I = last_three;
             break;
-        case 0xB:
+        case 0xB: // Jump with offset
+            if (SUPER_CHIP) {
+                pc = MEMORY_ADDR + (DATA_AT_REG(reg, nib2) + last_two);
+            } else {
+                pc = MEMORY_ADDR + (reg.V0 + last_three);
+            }
             break;
-        case 0xC:
+        case 0xC: // Random
+            DATA_AT_REG(reg, nib2) = rand() & last_two;
             break;
         case 0xD: // Display 
             {   
@@ -168,7 +176,16 @@ void decode_and_execute(uint16_t opcode) {
                     reg.VF = 1;
             }
             break;
-        case 0xE:
+        case 0xE: // Skip if key matching register is being pressed 
+            if (nib3 == 0x9 && nib4 == 0xE) {
+                if (get_currently_pressed() == DATA_AT_REG(reg, nib2)) {
+                    pc = pc + 2;
+                } // Skip if key matching register is not being pressed 
+            } else if (nib3 == 0xA && nib4 == 0x1) {
+                if (get_currently_pressed() != DATA_AT_REG(reg, nib2)) {
+                    pc = pc + 2;
+                }
+            }
             break;
         case 0xF:
             break;

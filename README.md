@@ -5,3 +5,9 @@ Using SDL for the graphics and key inputs.
 
 ## Installation
 You must have SDL2 installed to compile the files with the makefile.
+
+## TODO
+- Implement the timers
+- Sprite wrapping
+- ROM selection interface
+- Finish implementing opcodes
