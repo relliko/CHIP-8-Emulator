@@ -8,6 +8,6 @@ You must have SDL2 installed to compile the files with the makefile.
 
 ## TODO
 - Sprite wrapping
-- Implement the timers
+- Cap FPS to 60 and tie timers to it to get reasonable game speeds
 - Implement beep sound
 - ROM selection interface
