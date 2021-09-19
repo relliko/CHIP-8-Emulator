@@ -62,12 +62,15 @@ void decode_and_execute(uint16_t opcode) {
     // https://en.wikipedia.org/wiki/CHIP-8#Opcode_table
     switch (nib1) {
         case 0x0:
-            if (nib2 == 0 && nib3 == 0 && nib4 == 0)
+            if (nib2 == 0 && nib3 == 0 && nib4 == 0) {
                 printf("Possibly reading outside of memory space.\n");
-            if (nib2 == 0x0 && nib3 == 0xE && nib4 == 0x0) // clear screen
+            }
+            if (nib2 == 0x0 && nib3 == 0xE && nib4 == 0x0) {// clear screen
                 clear_screen();
-            else if (nib3 == 0xE && nib4 == 0xE)// Return from subroutine
+            }
+            else if (nib3 == 0xE && nib4 == 0xE) { // Return from subroutine
                 pc = stack_pop();
+            }
             break;
         case 0x1: // jump
             pc = MEMORY_ADDR + last_three;
@@ -215,14 +218,22 @@ void decode_and_execute(uint16_t opcode) {
                     }
                     break;
                 case 0x29:
-                    reg.I = FONT_ADDR + (5*DATA_AT_REG(reg, nib2));
+                    reg.I = 0x50 + (5*DATA_AT_REG(reg, nib2));
                     break;
                 case 0x33:
-                    
+                    MEMORY[reg.I] = DATA_AT_REG(reg, nib2) / 100;
+                    MEMORY[reg.I+1] = (DATA_AT_REG(reg, nib2) % 100) / 10;
+                    MEMORY[reg.I+2] = (DATA_AT_REG(reg, nib2) % 10);
                     break;
                 case 0x55:
+                    for (int i = 0; i <= nib2; i++) {
+                        MEMORY[reg.I + i] = DATA_AT_REG(reg, i);
+                    }
                     break;
                 case 0x65:
+                    for (int i = 0; i <= nib2; i++) {
+                        DATA_AT_REG(reg, i) = MEMORY[reg.I + i];
+                    }
                     break;
             }
             break;
