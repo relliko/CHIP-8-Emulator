@@ -18,7 +18,7 @@ int main(int argc, char **argv) {
     init_display();
     load_ROM();
 
-    // Main game loop
+    // Main loop
     while (1) {
         update_timers();
         handle_input_events();
