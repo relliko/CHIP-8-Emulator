@@ -18,7 +18,7 @@ static void decrement_8bit_timer(uint8_t* t) {
 
 // Decrements both bit timers 60 times per second 
 void update_timers(void) {
-    decrement_8bit_timer(&delay_timer);
-    decrement_8bit_timer(&sound_timer);
+    decrement_8bit_timer(&DELAY_TIMER);
+    decrement_8bit_timer(&SOUND_TIMER);
     // Store the last time the timers got changed.
 }

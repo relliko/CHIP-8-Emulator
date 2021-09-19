@@ -2,8 +2,8 @@
 
 #define TIMER 
 
-uint8_t delay_timer;
-uint8_t sound_timer;
+uint8_t DELAY_TIMER;
+uint8_t SOUND_TIMER;
 
 
 void update_timers(void);

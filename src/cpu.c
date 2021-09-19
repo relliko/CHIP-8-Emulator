@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <display.h>
 #include <input.h>
+#include <timer.h>
 #include <arpa/inet.h>
 #include <settings.h>
 
@@ -51,12 +52,12 @@ uint16_t fetch(void) {
 // Decodes an opcode and executes the instruction.
 void decode_and_execute(uint16_t opcode) {
     // Extract each nibble from the 2 byte opcode
-    uint8_t nib1 = (opcode >> 12) & 0xf;
-    uint8_t nib2 = (opcode >> 8)  & 0xf;
-    uint8_t nib3 = (opcode >> 4)  & 0xf;
-    uint8_t nib4 =  opcode        & 0xf;
-    uint8_t  last_two   = opcode & 0x00ff;
-    uint16_t last_three = opcode & 0x0fff;
+    uint8_t  nib1       = (opcode >> 12) & 0xf;
+    uint8_t  nib2       = (opcode >> 8)  & 0xf;
+    uint8_t  nib3       = (opcode >> 4)  & 0xf;
+    uint8_t  nib4       =  opcode        & 0xf;
+    uint8_t  last_two   =  opcode        & 0x00ff;
+    uint16_t last_three =  opcode        & 0x0fff;
 
     // https://en.wikipedia.org/wiki/CHIP-8#Opcode_table
     switch (nib1) {
@@ -188,6 +189,42 @@ void decode_and_execute(uint16_t opcode) {
             }
             break;
         case 0xF:
+            switch (last_two) {
+                case 0x07:
+                    DATA_AT_REG(reg, nib2) = DELAY_TIMER;
+                    break;
+                case 0x15:
+                    DELAY_TIMER = DATA_AT_REG(reg, nib2);
+                    break;
+                case 0x18:
+                    SOUND_TIMER = DATA_AT_REG(reg, nib2);
+                    break;
+                case 0x1E:
+                    reg.I = reg.I + DATA_AT_REG(reg, nib2);
+                    // Overflow check. The CHIP-8 interpreter for Amiga has this behavior.
+                    // Not necessary for most games, but Spacefight 2091! requires it.
+                    if (reg.I < DATA_AT_REG(reg, nib2)) {
+                        reg.VF = 1;
+                    }
+                    break;
+                case 0x0A:
+                    if (get_currently_pressed() == 0xDEADBEEF) {
+                        pc = pc - 2;
+                    } else {
+                        DATA_AT_REG(reg, nib2) = get_currently_pressed();
+                    }
+                    break;
+                case 0x29:
+                    reg.I = FONT_ADDR + (5*DATA_AT_REG(reg, nib2));
+                    break;
+                case 0x33:
+                    
+                    break;
+                case 0x55:
+                    break;
+                case 0x65:
+                    break;
+            }
             break;
     }
 }
