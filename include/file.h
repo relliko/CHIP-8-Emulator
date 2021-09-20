@@ -1,2 +1,2 @@
 
-void load_ROM(void);
+void load_ROM(char* argv);

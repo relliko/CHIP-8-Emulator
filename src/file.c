@@ -6,17 +6,21 @@
 #include <stdlib.h>
 #include <sys/stat.h>
 
+char FILEPATH[255];
+
 // Loads a ROM into memory at 0x200
-void load_ROM() {
+void load_ROM(char* arg) {
+    strcat(FILEPATH, "ROM/");
+    strcat(FILEPATH, arg);
+
     FILE* fp;
-    char* filepath = "./ROM/PONG";
-    fp = fopen(filepath, "rb");
+    fp = fopen(FILEPATH, "rb");
     if (!fp) {
-        printf("Error: fopen(%s) error number %d, %s.\n", filepath, errno, strerror(errno));
+        printf("Error: fopen(%s) error number %d, %s.\n", FILEPATH, errno, strerror(errno));
         exit(1);
     }
     struct stat sb;
-    if (stat(filepath, &sb) == -1) {
+    if (stat(FILEPATH, &sb) == -1) {
         printf("stat error\n");
         exit(1);
     }
@@ -25,6 +29,6 @@ void load_ROM() {
 
     fclose(fp);
 
-    printf("Loaded ROM\n");
+    printf("Loaded %s\n", arg);
 
 }

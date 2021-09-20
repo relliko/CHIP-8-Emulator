@@ -16,12 +16,17 @@ int main(int argc, char **argv) {
     //print_memory(80, 80);
     //test_stack();
     init_display();
-    load_ROM();
+    if (argc != 2) {
+        printf("usage: chip8 rom_filename");
+        exit(EXIT_FAILURE);
+    }
+    load_ROM(argv[1]);
 
     // Main loop
     while (1) {
         update_timers();
         handle_input_events();
+        
         cpu_cycle();
         render();
     }

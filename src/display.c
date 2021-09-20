@@ -123,8 +123,8 @@ void render(void) {
             draw_pixel_grid(x, y);
         }
     }
-    SDL_Delay(5);
     SDL_RenderPresent(renderer);
+    SDL_Delay(5);
 
     return;
 }
