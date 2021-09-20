@@ -12,5 +12,5 @@ You must have SDL2 and gcc installed to compile the files with the makefile.
 - Enter ```./chip8 filename``` in the shell.
 
 ## TODO
-- Cap FPS to 60 and tie timers to it to get reasonable game speeds
+- Make game speed configurable to be compatible with a wider variety of games.
 - Implement beep sound

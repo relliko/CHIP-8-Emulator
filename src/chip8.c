@@ -8,6 +8,10 @@
 #include <file.h>
 
 int main(int argc, char **argv) {
+    if (argc != 2) {
+        printf("usage: chip8 rom_filename");
+        exit(EXIT_FAILURE);
+    }
     printf("Booting...\n");
     init_mem();
     init_cpu();
@@ -16,10 +20,6 @@ int main(int argc, char **argv) {
     //print_memory(80, 80);
     //test_stack();
     init_display();
-    if (argc != 2) {
-        printf("usage: chip8 rom_filename");
-        exit(EXIT_FAILURE);
-    }
     load_ROM(argv[1]);
 
     // Main loop
