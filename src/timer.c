@@ -9,15 +9,15 @@ void init_timers(void) {
 }
 
 
-static void decrement_8bit_timer(uint8_t t) {
+static void decrement_8bit_timer(uint8_t* t) {
     if (t > 0) {
-        t--;
+        *t = *t - 1;
     }
 }
 
 
 // Decrements both bit timers 60 times per second 
 void update_timers(void) {
-    decrement_8bit_timer(DELAY_TIMER);
-    decrement_8bit_timer(SOUND_TIMER);
+    decrement_8bit_timer(&DELAY_TIMER);
+    decrement_8bit_timer(&SOUND_TIMER);
 }

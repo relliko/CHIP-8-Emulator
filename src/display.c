@@ -14,8 +14,8 @@ void init_display(void) {
     // Initialize the window
     window = SDL_CreateWindow(
         "CHIP-8 EMULATOR",                 // window title
-        SDL_WINDOWPOS_UNDEFINED,           // initial x position
-        SDL_WINDOWPOS_UNDEFINED,           // initial y position
+        0,                                 // initial x position
+        0,                                 // initial y position
         SCREEN_WIDTH,                      // width, in pixels
         SCREEN_HEIGHT,                     // height, in pixels
         SDL_WINDOW_OPENGL                  // flags
@@ -31,6 +31,7 @@ void init_display(void) {
         printf("Could not create renderer: %s\n", SDL_GetError());
         exit(1);
     }
+    SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
 }
 
 void cleanup_display(void) {
@@ -40,7 +41,7 @@ void cleanup_display(void) {
 
 // Draws a grid on the screen for debugging
 static void draw_pixel_grid(int x, int y) {
-    SDL_SetRenderDrawColor(renderer, 0x80, 0x80, 0x80, 0xff);
+    SDL_SetRenderDrawColor(renderer, 0x80, 0x80, 0x80, 0x10);
     SDL_Rect outlineRect = {x*WINDOW_SCALAR, y*WINDOW_SCALAR, WINDOW_SCALAR, WINDOW_SCALAR};
     SDL_RenderDrawRect(renderer, &outlineRect);
 }
@@ -56,16 +57,15 @@ void clear_screen(void) {
 
 // Draws an n pixel tall sprite from memory location held in addr at x,y in the pixel array.
 // Returns 1 if a pixel was turned off by this operation, else 0
-int draw_from_mem(uint16_t addr, uint8_t n, uint8_t x, uint8_t y) {
+int draw_from_mem(uint16_t addr, uint8_t x, uint8_t y, uint8_t n) {
     int flipped = 0;
-    // TODO: Sprite wrapping
-    //printf("%d %d\n", x, y);
+    //printf("addr: 0x%x | x: %d | y: %d | n: %d | template: 0x%x\n", addr, x, y, n, MEMORY[addr]);
     for (int i = 0; i < n; i++) {
         uint8_t template = MEMORY[addr+i];
         for (int j = 0; j < 8; j++) {
-            uint8_t temp = pixels[y+i][x+j];
-            pixels[y+i][x+j] = pixels[y+i][x+j] | ((template << j) & 0x80);
-            if (pixels[y+i][x+j] != temp) {
+            uint8_t original = pixels[y+i][x+j];
+            pixels[y+i][x+j] = pixels[y+i][x+j] ^ (0x80 & (template << j));
+            if (pixels[y+i][x+j] != original) {
                 flipped = 1;
             }
         }
@@ -120,10 +120,10 @@ void render(void) {
             } else {
                 clear_pixel(x, y);
             }
-            //draw_pixel_grid(x, y);
+            draw_pixel_grid(x, y);
         }
     }
-
+    SDL_Delay(5);
     SDL_RenderPresent(renderer);
 
     return;

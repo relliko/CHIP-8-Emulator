@@ -9,7 +9,7 @@
 // Loads a ROM into memory at 0x200
 void load_ROM() {
     FILE* fp;
-    char* filepath = "./ROM/piper.ch8";
+    char* filepath = "./ROM/PONG";
     fp = fopen(filepath, "rb");
     if (!fp) {
         printf("Error: fopen(%s) error number %d, %s.\n", filepath, errno, strerror(errno));

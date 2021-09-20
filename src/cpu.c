@@ -39,7 +39,6 @@ void init_cpu(void) {
 uint16_t fetch(void) {
     if (pc == MEMORY_END_ADDR) {
         pc = PROGRAM_START_ADDR; 
-        printf("End\n");
     }
     uint8_t part1 = *pc;
     pc = pc + 1;
@@ -67,8 +66,7 @@ void decode_and_execute(uint16_t opcode) {
             }
             if (nib2 == 0x0 && nib3 == 0xE && nib4 == 0x0) {// clear screen
                 clear_screen();
-            }
-            else if (nib3 == 0xE && nib4 == 0xE) { // Return from subroutine
+            } else if (nib3 == 0xE && nib4 == 0xE) { // Return from subroutine
                 pc = stack_pop();
             }
             break;
@@ -77,114 +75,117 @@ void decode_and_execute(uint16_t opcode) {
             break;
         case 0x2: // Call subroutine
             stack_push(pc);
-            pc = MEMORY_ADDR + (opcode & 0x0FFF);
+            pc = MEMORY_ADDR + last_three;
             break;
         case 0x3: // Skip equal
-            if (DATA_AT_REG(reg, nib2) == last_two)
+            if (DATA_AT_REG(nib2) == last_two) {
                 pc = pc + 2;
+            }
             break;
         case 0x4: // Skip not equal
-            if (DATA_AT_REG(reg, nib2) != last_two)
+            if (DATA_AT_REG(nib2) != last_two) {
                 pc = pc + 2;
+            }
             break;
         case 0x5: // Skip if two registers are equal
-            if (DATA_AT_REG(reg, nib2) == DATA_AT_REG(reg, nib3))
+            if (DATA_AT_REG(nib2) == DATA_AT_REG(nib3)) {
                 pc = pc + 2;
+            }
             break;
         case 0x6: // Set register
-            DATA_AT_REG(reg, nib2) = last_two;
+            DATA_AT_REG(nib2) = last_two;
             break;
         case 0x7: // add a value to register VX
-            DATA_AT_REG(reg, nib2) = DATA_AT_REG(reg, nib2) + last_two;
+            DATA_AT_REG(nib2) = DATA_AT_REG(nib2) + last_two;
             break;
         case 0x8:
             switch (nib4) {
                 case 0x0: // Set register to another register
-                    DATA_AT_REG(reg, nib2) = DATA_AT_REG(reg, nib3);
+                    DATA_AT_REG(nib2) = DATA_AT_REG(nib3);
                     break;
                 case 0x1: // Binary OR 
-                    DATA_AT_REG(reg, nib2) = DATA_AT_REG(reg, nib2) | DATA_AT_REG(reg, nib3);
+                    DATA_AT_REG(nib2) = DATA_AT_REG(nib2) | DATA_AT_REG(nib3);
                     break;
                 case 0x2: // Binary AND
-                    DATA_AT_REG(reg, nib2) = DATA_AT_REG(reg, nib2) & DATA_AT_REG(reg, nib3);
+                    DATA_AT_REG(nib2) = DATA_AT_REG(nib2) & DATA_AT_REG(nib3);
                     break;
                 case 0x3: // Binary XOR
-                    DATA_AT_REG(reg, nib2) = DATA_AT_REG(reg, nib2) ^ DATA_AT_REG(reg, nib3);
+                    DATA_AT_REG(nib2) = DATA_AT_REG(nib2) ^ DATA_AT_REG(nib3);
                     break;
                 case 0x4: // Addition with carry flag
                     // Check for overflow
-                    if (DATA_AT_REG(reg, nib3) + DATA_AT_REG(reg, nib2) > 255) {
+                    if (DATA_AT_REG(nib3) + DATA_AT_REG(nib2) > 255) {
+                        reg.VF = 1;
+                    } else {
+                        reg.VF = 0;
+                    }
+                    DATA_AT_REG(nib2) = DATA_AT_REG(nib2) + DATA_AT_REG(nib3);
+                    break;
+                case 0x5: // Subtract with carry flag (X = X - Y)
+                    if (DATA_AT_REG(nib2) >= DATA_AT_REG(nib3)) {
+                        reg.VF = 1;
+                    } else {
+                        reg.VF = 0;
+                    }
+                    DATA_AT_REG(nib2) = DATA_AT_REG(nib2) - DATA_AT_REG(nib3);
+                    break;
+                case 0x6: // Shift
+                    reg.VF = (DATA_AT_REG(nib2) & 0x01);
+                    DATA_AT_REG(nib2) = DATA_AT_REG(nib3) >> 1;
+                    break;
+                case 0x7: // Subtract with carry flag (X = Y - X)
+                    if (DATA_AT_REG(nib2) < DATA_AT_REG(nib3)) {
                         reg.VF = 1;
                     }
                     else {
                         reg.VF = 0;
                     }
-                    DATA_AT_REG(reg, nib2) = DATA_AT_REG(reg, nib2) + DATA_AT_REG(reg, nib3);
-                    break;
-                case 0x5: // Subtract with carry flag (X = X - Y)
-                    if (DATA_AT_REG(reg, nib2) > DATA_AT_REG(reg, nib3))
-                        reg.VF = 1;
-                    else
-                        reg.VF = 0;
-                    DATA_AT_REG(reg, nib2) = DATA_AT_REG(reg, nib2) - DATA_AT_REG(reg, nib3);
-                    break;
-                case 0x6: // Shift
-                    reg.VF = (DATA_AT_REG(reg, nib2) & 0x01);
-                    DATA_AT_REG(reg, nib2) = DATA_AT_REG(reg, nib3) >> 1;
-                    break;
-                case 0x7: // Subtract with carry flag (X = Y - X)
-                    if (DATA_AT_REG(reg, nib2) < DATA_AT_REG(reg, nib3))
-                        reg.VF = 1;
-                    else
-                        reg.VF = 0;
-                    DATA_AT_REG(reg, nib2) = DATA_AT_REG(reg, nib3) - DATA_AT_REG(reg, nib2);
+                    DATA_AT_REG(nib2) = DATA_AT_REG(nib3) - DATA_AT_REG(nib2);
                     break;
                 case 0xE:
-                    if ((DATA_AT_REG(reg, nib2) & 0x80) > 0) {
+                    if ((DATA_AT_REG(nib2) & 0x80) > 0) {
                         reg.VF = 1;
                     } else {
                         reg.VF = 0;
                     }
-                    DATA_AT_REG(reg, nib2) = DATA_AT_REG(reg, nib3) << 1;
+                    DATA_AT_REG(nib2) = DATA_AT_REG(nib3) << 1;
                     break;
             }
             break;
         case 0x9: // Skip if two registers are not equal
-            if (DATA_AT_REG(reg, nib2) != DATA_AT_REG(reg, nib3))
+            if (DATA_AT_REG(nib2) != DATA_AT_REG(nib3)) {
                 pc = pc + 2;
+            }
             break;
         case 0xA: // Set index register
             reg.I = last_three;
             break;
         case 0xB: // Jump with offset
-            if (SUPER_CHIP) {
-                pc = MEMORY_ADDR + (DATA_AT_REG(reg, nib2) + last_two);
+            if (SUPER_CHIP == 1) {
+                pc = MEMORY_ADDR + (DATA_AT_REG(nib2) + last_two);
             } else {
                 pc = MEMORY_ADDR + (reg.V0 + last_three);
             }
             break;
         case 0xC: // Random
-            DATA_AT_REG(reg, nib2) = rand() & last_two;
+            DATA_AT_REG(nib2) = rand() & last_two;
             break;
-        case 0xD: // Display 
+        case 0xD: // Display (DXYN)
             {   
-                uint8_t x = DATA_AT_REG(reg, nib2);
-                uint8_t y = DATA_AT_REG(reg, nib3);
+                uint8_t x = DATA_AT_REG(nib2) % PIXELS_WIDTH;
+                uint8_t y = DATA_AT_REG(nib3) % PIXELS_HEIGHT;
                 uint8_t n = nib4;
                 uint16_t addr = reg.I; // Pull the data out of index register
-                int res = draw_from_mem(addr, n, x, y);
-                // Set flag register to 1
-                if (res == 1)
-                    reg.VF = 1;
+                reg.VF = draw_from_mem(addr, x, y, n);
             }
             break;
         case 0xE: // Skip if key matching register is being pressed 
             if (nib3 == 0x9 && nib4 == 0xE) {
-                if (get_currently_pressed() == DATA_AT_REG(reg, nib2)) {
+                if (get_currently_pressed() == DATA_AT_REG(nib2)) {
                     pc = pc + 2;
                 } // Skip if key matching register is not being pressed 
             } else if (nib3 == 0xA && nib4 == 0x1) {
-                if (get_currently_pressed() != DATA_AT_REG(reg, nib2)) {
+                if (get_currently_pressed() != DATA_AT_REG(nib2)) {
                     pc = pc + 2;
                 }
             }
@@ -192,19 +193,19 @@ void decode_and_execute(uint16_t opcode) {
         case 0xF:
             switch (last_two) {
                 case 0x07:
-                    DATA_AT_REG(reg, nib2) = DELAY_TIMER;
+                    DATA_AT_REG(nib2) = DELAY_TIMER;
                     break;
                 case 0x15:
-                    DELAY_TIMER = DATA_AT_REG(reg, nib2);
+                    DELAY_TIMER = DATA_AT_REG(nib2);
                     break;
                 case 0x18:
-                    SOUND_TIMER = DATA_AT_REG(reg, nib2);
+                    SOUND_TIMER = DATA_AT_REG(nib2);
                     break;
                 case 0x1E:
-                    reg.I = reg.I + DATA_AT_REG(reg, nib2);
+                    reg.I = reg.I + DATA_AT_REG(nib2);
                     // Overflow check. The CHIP-8 interpreter for Amiga has this behavior.
                     // Not necessary for most games, but Spacefight 2091! requires it.
-                    if (reg.I < DATA_AT_REG(reg, nib2)) {
+                    if (reg.I < DATA_AT_REG(nib2)) {
                         reg.VF = 1;
                     }
                     break;
@@ -212,25 +213,25 @@ void decode_and_execute(uint16_t opcode) {
                     if (get_currently_pressed() == 0xDEADBEEF) {
                         pc = pc - 2;
                     } else {
-                        DATA_AT_REG(reg, nib2) = get_currently_pressed();
+                        DATA_AT_REG(nib2) = get_currently_pressed();
                     }
                     break;
                 case 0x29:
-                    reg.I = 0x50 + (5*DATA_AT_REG(reg, nib2));
+                    reg.I = 0x50 + (5*DATA_AT_REG(nib2));
                     break;
                 case 0x33:
-                    MEMORY[reg.I] = DATA_AT_REG(reg, nib2) / 100;
-                    MEMORY[reg.I+1] = (DATA_AT_REG(reg, nib2) % 100) / 10;
-                    MEMORY[reg.I+2] = (DATA_AT_REG(reg, nib2) % 10);
+                    MEMORY[reg.I] = DATA_AT_REG(nib2) / 100;
+                    MEMORY[reg.I+1] = (DATA_AT_REG(nib2) % 100) / 10;
+                    MEMORY[reg.I+2] = (DATA_AT_REG(nib2) % 10);
                     break;
                 case 0x55:
                     for (int i = 0; i <= nib2; i++) {
-                        MEMORY[reg.I + i] = DATA_AT_REG(reg, i);
+                        MEMORY[reg.I + i] = DATA_AT_REG(i);
                     }
                     break;
                 case 0x65:
                     for (int i = 0; i <= nib2; i++) {
-                        DATA_AT_REG(reg, i) = MEMORY[reg.I + i];
+                        DATA_AT_REG(i) = MEMORY[reg.I + i];
                     }
                     break;
             }
