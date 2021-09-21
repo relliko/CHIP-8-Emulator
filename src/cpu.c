@@ -216,11 +216,13 @@ void decode_and_execute(uint16_t opcode) {
                     for (int i = 0; i <= nib2; i++) {
                         MEMORY[reg.I + i] = DATA_AT_REG(i);
                     }
+                    reg.I = reg.I + nib2 + 1;
                     break;
                 case 0x65:
                     for (int i = 0; i <= nib2; i++) {
                         DATA_AT_REG(i) = MEMORY[reg.I + i];
                     }
+                    reg.I = reg.I + nib2 + 1;
                     break;
             }
             break;

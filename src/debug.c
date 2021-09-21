@@ -42,7 +42,6 @@ void print_pixels_array(uint8_t arr[32][64]) {
     printf("Printing pixels array finished\n\n");
 }
 
-
 // fills the stack then pops 
 void test_stack() {
     uint8_t* c = 0x00;
