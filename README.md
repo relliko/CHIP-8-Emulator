@@ -13,6 +13,13 @@ You must have SDL2 and gcc installed to compile the files with the makefile.
 - Place a CHIP-8 ROM in the ROM directory.
 - Enter ```./chip8 filename``` in the shell.
 
+Controls:
+1234
+qwer
+asdf
+zxcv
+
+
 ## TODO
 - Make game speed configurable to be compatible with a wider variety of games.
 - Implement beep sound

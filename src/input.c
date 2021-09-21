@@ -11,6 +11,10 @@ int get_currently_pressed() {
     return PRESSED_KEY;
 }
 
+void acknowledge_pressed() {
+    PRESSED_KEY = 0xDEADBEEF;
+}
+
 void handle_input_events(void) {
     while (SDL_PollEvent(&event)) {
         switch( event.type ){

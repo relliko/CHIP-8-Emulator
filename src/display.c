@@ -68,9 +68,6 @@ uint8_t draw_from_mem(uint16_t addr, uint8_t x, uint8_t y, uint8_t n) {
                 flipped = 1;
             }
             pixels[y+i][x+j] = pixels[y+i][x+j] ^ (0x80 & (template << j));
-            // if (pixels[y+i][x+j] != original) {
-            //     flipped = 1;
-            // }
         }
     }
     return flipped;

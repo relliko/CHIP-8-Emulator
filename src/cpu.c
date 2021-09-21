@@ -203,6 +203,7 @@ void decode_and_execute(uint16_t opcode) {
                         pc = pc - 2;
                     } else {
                         DATA_AT_REG(nib2) = get_currently_pressed();
+                        acknowledge_pressed();
                     }
                     break;
                 case 0x29:
