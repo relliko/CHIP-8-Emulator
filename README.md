@@ -15,3 +15,4 @@ You must have SDL2 and gcc installed to compile the files with the makefile.
 ## TODO
 - Make game speed configurable to be compatible with a wider variety of games.
 - Implement beep sound
+- Maybe compile it to WebAssembly
