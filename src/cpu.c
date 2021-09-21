@@ -27,7 +27,7 @@ struct registers {
     uint8_t VD;
     uint8_t VE;
     uint8_t VF;  // flag register
-    uint16_t I; // Index register used to point to locations in memory
+    uint16_t I;  // Index register used to point to locations in memory
 } reg;
 
 
@@ -37,9 +37,6 @@ void init_cpu(void) {
 
 // Read an instruction that the program counter is pointing to and returns it.
 uint16_t fetch(void) {
-    if (pc == MEMORY_END_ADDR) {
-        pc = PROGRAM_START_ADDR; 
-    }
     uint8_t part1 = *pc;
     pc = pc + 1;
     uint8_t part2 = *pc;
@@ -71,11 +68,11 @@ void decode_and_execute(uint16_t opcode) {
             }
             break;
         case 0x1: // jump
-            pc = MEMORY_ADDR + last_three;
+            pc = &MEMORY[last_three];
             break;
         case 0x2: // Call subroutine
             stack_push(pc);
-            pc = MEMORY_ADDR + last_three;
+            pc = &MEMORY[last_three];
             break;
         case 0x3: // Skip equal
             if (DATA_AT_REG(nib2) == last_two) {
@@ -115,17 +112,17 @@ void decode_and_execute(uint16_t opcode) {
                 case 0x4: // Addition with carry flag
                     // Check for overflow
                     if (DATA_AT_REG(nib3) + DATA_AT_REG(nib2) > 255) {
-                        reg.VF = 1;
+                        reg.VF = 0x01;
                     } else {
-                        reg.VF = 0;
+                        reg.VF = 0x00;
                     }
                     DATA_AT_REG(nib2) = DATA_AT_REG(nib2) + DATA_AT_REG(nib3);
                     break;
                 case 0x5: // Subtract with carry flag (X = X - Y)
                     if (DATA_AT_REG(nib2) >= DATA_AT_REG(nib3)) {
-                        reg.VF = 1;
+                        reg.VF = 0x01;
                     } else {
-                        reg.VF = 0;
+                        reg.VF = 0x00;
                     }
                     DATA_AT_REG(nib2) = DATA_AT_REG(nib2) - DATA_AT_REG(nib3);
                     break;
@@ -135,10 +132,10 @@ void decode_and_execute(uint16_t opcode) {
                     break;
                 case 0x7: // Subtract with carry flag (X = Y - X)
                     if (DATA_AT_REG(nib2) < DATA_AT_REG(nib3)) {
-                        reg.VF = 1;
+                        reg.VF = 0x01;
                     }
                     else {
-                        reg.VF = 0;
+                        reg.VF = 0x00;
                     }
                     DATA_AT_REG(nib2) = DATA_AT_REG(nib3) - DATA_AT_REG(nib2);
                     break;
@@ -161,14 +158,10 @@ void decode_and_execute(uint16_t opcode) {
             reg.I = last_three;
             break;
         case 0xB: // Jump with offset
-            if (SUPER_CHIP == 1) {
-                pc = MEMORY_ADDR + (DATA_AT_REG(nib2) + last_two);
-            } else {
-                pc = MEMORY_ADDR + (reg.V0 + last_three);
-            }
+            pc = MEMORY_ADDR + (DATA_AT_REG(0) + last_three);
             break;
         case 0xC: // Random
-            DATA_AT_REG(nib2) = rand() & last_two;
+            DATA_AT_REG(nib2) = (rand() % 0xFF) & last_two;
             break;
         case 0xD: // Display (DXYN)
             {   
@@ -203,11 +196,6 @@ void decode_and_execute(uint16_t opcode) {
                     break;
                 case 0x1E:
                     reg.I = reg.I + DATA_AT_REG(nib2);
-                    // Overflow check. The CHIP-8 interpreter for Amiga has this behavior.
-                    // Not necessary for most games, but Spacefight 2091! requires it.
-                    if (reg.I < DATA_AT_REG(nib2)) {
-                        reg.VF = 1;
-                    }
                     break;
                 case 0x0A:
                     if (get_currently_pressed() == 0xDEADBEEF) {

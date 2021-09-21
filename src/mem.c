@@ -1,10 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <mem.h>
 
 // Initializes the system's memory
 // Returns 1 upon success
 void init_mem(void) {
+    memset(MEMORY, 0, sizeof(MEMORY));
     MEMORY_ADDR = &MEMORY[0];
     FONT_ADDR = MEMORY_ADDR + 0x50;
     PROGRAM_START_ADDR = MEMORY_ADDR + 0x200;

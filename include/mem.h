@@ -4,7 +4,7 @@
 #define RAM_SIZE 4096 // bytes
 #define STACK_SIZE 64 // 32 two-byte entries
 
-// TODO: This could be refactored into a struct
+// This could be refactored into a struct
 uint8_t MEMORY[RAM_SIZE];
 uint8_t* MEMORY_ADDR;
 uint8_t* FONT_ADDR;

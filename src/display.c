@@ -57,17 +57,20 @@ void clear_screen(void) {
 
 // Draws an n pixel tall sprite from memory location held in addr at x,y in the pixel array.
 // Returns 1 if a pixel was turned off by this operation, else 0
-int draw_from_mem(uint16_t addr, uint8_t x, uint8_t y, uint8_t n) {
-    int flipped = 0;
+uint8_t draw_from_mem(uint16_t addr, uint8_t x, uint8_t y, uint8_t n) {
+    uint8_t flipped = 0;
     //printf("addr: 0x%x | x: %d | y: %d | n: %d | template: 0x%x\n", addr, x, y, n, MEMORY[addr]);
     for (int i = 0; i < n; i++) {
         uint8_t template = MEMORY[addr+i];
         for (int j = 0; j < 8; j++) {
-            uint8_t original = pixels[y+i][x+j];
-            pixels[y+i][x+j] = pixels[y+i][x+j] ^ (0x80 & (template << j));
-            if (pixels[y+i][x+j] != original) {
+            uint8_t original = pixels[(y+i)%32][(x+j)%64];
+            if (original > 0 && ((0x80) & (template << j)) == 0x80) {
                 flipped = 1;
             }
+            pixels[(y+i)%32][(x+j)%64] = pixels[(y+i)%32][(x+j)%64] ^ (0x80 & (template << j));
+            // if (pixels[y+i][x+j] != original) {
+            //     flipped = 1;
+            // }
         }
     }
     return flipped;
@@ -100,14 +103,6 @@ static void clear_pixel(int x, int y) {
     SDL_RenderFillRect(renderer, &fillRect);
 }
 
-// Determines if the nth pixel from left to right in the byte is on
-// Uses zero indexing.
-static int pixel_on_at_pos(uint8_t bits) {
-    if (bits > 0) {
-        return 1;
-    }
-    return 0;
-}
 
 void render(void) {
     SDL_SetRenderDrawColor(renderer, 0x3c, 0x00, 0x5a, 0xff);
@@ -115,7 +110,7 @@ void render(void) {
     // offset position based on x,y of pixels array
     for (int y = 0; y < PIXELS_HEIGHT; y++) {
         for (int x = 0; x < PIXELS_WIDTH; x++) {
-            if (pixel_on_at_pos(pixels[y][x])) {
+            if (pixels[y][x] > 0) {
                 draw_pixel(x, y);
             } else {
                 clear_pixel(x, y);
