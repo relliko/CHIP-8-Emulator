@@ -13,11 +13,11 @@ You must have SDL2 and gcc installed to compile the files with the makefile.
 - Place a CHIP-8 ROM in the ROM directory.
 - Enter ```./chip8 filename``` in the shell.
 
-Controls:
-1234
-qwer
-asdf
-zxcv
+Controls:  
+1234  
+qwer  
+asdf  
+zxcv  
 
 
 ## TODO
