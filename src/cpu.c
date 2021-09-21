@@ -4,7 +4,6 @@
 #include <display.h>
 #include <input.h>
 #include <timer.h>
-#include <arpa/inet.h>
 #include <settings.h>
 
 
