@@ -42,6 +42,7 @@ uint16_t fetch(void) {
     uint8_t part2 = *pc;
     pc = pc + 1;
     uint16_t opcode = (part1 << 8) | (part2);
+    //printf("0x%x\n", opcode);
     return opcode;
 }
 
@@ -158,7 +159,7 @@ void decode_and_execute(uint16_t opcode) {
             reg.I = last_three;
             break;
         case 0xB: // Jump with offset
-            pc = MEMORY_ADDR + (DATA_AT_REG(0) + last_three);
+            pc = MEMORY_ADDR + (reg.V0 + last_three);
             break;
         case 0xC: // Random
             DATA_AT_REG(nib2) = (rand() % 0xFF) & last_two;
@@ -216,13 +217,11 @@ void decode_and_execute(uint16_t opcode) {
                     for (int i = 0; i <= nib2; i++) {
                         MEMORY[reg.I + i] = DATA_AT_REG(i);
                     }
-                    reg.I = reg.I + nib2 + 1;
                     break;
                 case 0x65:
                     for (int i = 0; i <= nib2; i++) {
                         DATA_AT_REG(i) = MEMORY[reg.I + i];
                     }
-                    reg.I = reg.I + nib2 + 1;
                     break;
             }
             break;
@@ -230,6 +229,9 @@ void decode_and_execute(uint16_t opcode) {
 }
 
 void cpu_cycle(void) {
-    uint16_t opcode = fetch();
-    decode_and_execute(opcode);
+    // Do multiple instructions per frame
+    for (int i = 0; i < IPS/SCREEN_FPS; i++) {
+        uint16_t opcode = fetch();
+        decode_and_execute(opcode);
+    }
 }

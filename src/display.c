@@ -63,11 +63,11 @@ uint8_t draw_from_mem(uint16_t addr, uint8_t x, uint8_t y, uint8_t n) {
     for (int i = 0; i < n; i++) {
         uint8_t template = MEMORY[addr+i];
         for (int j = 0; j < 8; j++) {
-            uint8_t original = pixels[(y+i)%32][(x+j)%64];
+            uint8_t original = pixels[y+i][x+j];
             if (original > 0 && ((0x80) & (template << j)) == 0x80) {
                 flipped = 1;
             }
-            pixels[(y+i)%32][(x+j)%64] = pixels[(y+i)%32][(x+j)%64] ^ (0x80 & (template << j));
+            pixels[y+i][x+j] = pixels[y+i][x+j] ^ (0x80 & (template << j));
             // if (pixels[y+i][x+j] != original) {
             //     flipped = 1;
             // }
@@ -119,7 +119,7 @@ void render(void) {
         }
     }
     SDL_RenderPresent(renderer);
-    SDL_Delay(5);
+    SDL_Delay(1000/SCREEN_FPS);
 
     return;
 }

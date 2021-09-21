@@ -6,6 +6,7 @@ Using SDL2 for the graphics and key inputs.
 
 ## Installation
 You must have SDL2 and gcc installed to compile the files with the makefile.
+```sudo apt-get install libsdl2-dev```
 
 ## Usage
 - Run the makefile to create the executable file.
